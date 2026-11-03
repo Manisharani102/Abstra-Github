@@ -1,0 +1,52 @@
+# Render Blueprint: one free web service serves the React build, the REST API and the webhook endpoint,
+# and runs the background worker and reconciler. Deploy with Render → New → Blueprint → pick this repo.
+#
+# Values marked `sync: false` are prompted for on the first deploy; copy them from server/.env.
+# Copy them exactly, not regenerated:
+#   - ENCRYPTION_KEY: Slack URLs already saved in the database were encrypted with it.
+#   - GITHUB_APP_PRIVATE_KEY: the single base64 line, not the multi-line PEM (multi-line values
+#     are easy to truncate when pasted; a .env file keeps only the first line).
+services:
+  - type: web
+    name: repo-autopilot
+    runtime: node
+    plan: free
+    # Builds client/ first (client/dist), then server/ (server/dist); the server serves client/dist.
+    buildCommand: npm run install:all && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      # This service's own URL, no trailing slash, e.g. https://repo-autopilot.onrender.com.
+      # Set it after the first deploy shows the URL; Render redeploys on save.
+      - key: APP_URL
+        sync: false
+      # Supabase → Connect → Session pooler (IPv4). Remove the [ ] around the password.
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        sync: false
+      - key: GITHUB_APP_ID
+        sync: false
+      - key: GITHUB_APP_SLUG
+        sync: false
+      - key: GITHUB_APP_PRIVATE_KEY
+        sync: false
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_WEBHOOK_SECRET
+        sync: false
+      # Optional: leave empty to disable AI triage.
+      - key: GROQ_API_KEY
+        sync: false
+      # Groq retires models; if AI actions fail with "model ... decommissioned", pick a current one.
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b

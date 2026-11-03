@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Soft tint behind the content area so white cards stand out. */
+body {
+  background-image:
+    radial-gradient(circle at 100% 0%, rgb(224 231 255 / 0.6), transparent 40%),
+    radial-gradient(circle at 0% 100%, rgb(237 233 254 / 0.5), transparent 40%);
+  background-attachment: fixed;
+}

@@ -1,0 +1,15 @@
+{
+  "name": "repo-autopilot",
+  "private": true,
+  "description": "Event-driven GitHub automation bot: NestJS API + worker, React dashboard, Supabase Postgres",
+  "engines": { "node": ">=20.12" },
+  "scripts": {
+    "install:all": "npm ci --prefix server --include=dev && npm ci --prefix client --include=dev",
+    "build": "npm run build --prefix client && npm run build --prefix server",
+    "start": "node server/dist/main.js",
+    "dev:server": "npm run start:dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "test": "npm test --prefix server",
+    "lint": "npm run lint --prefix server"
+  }
+}
